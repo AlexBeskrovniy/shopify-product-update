@@ -1,0 +1,22 @@
+export const validColors = [
+    'Black',
+    'White',
+    'Pink',
+    'Purple',
+    'Green',
+    'Orange',
+    'Red',
+    'Gray',
+    'Blue',
+    'Beige',
+    'Gold',
+    'Brown',
+    'Yellow',
+    'Silver',
+    'Turquoise',
+    'Plum',
+    'Chocolate',
+    'Sienna',
+    'Cyan',
+    'Khaki'
+]

@@ -1,0 +1,18 @@
+{
+  "name": "shopify-product-update",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node ./src/index.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@shopify/shopify-api": "^5.0.1",
+    "shopify-api-node": "^3.11.0"
+  }
+}
