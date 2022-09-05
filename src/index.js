@@ -1,13 +1,20 @@
+import 'dotenv/config';
 import * as fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
 import Shopify from 'shopify-api-node';
-import { config } from './config.js';
 import { validColors } from './css-colors.js';
 import { colorMap } from './map.js';
 
+const __filename = fileURLToPath(import.meta.url);
+
+const __dirname = path.dirname(__filename);
+
 export const shopify = new Shopify({
-  shopName: config.shopName,
-  //apiKey: config.apiKey,
-  accessToken: config.accessToken
+  shopName: process.env.SHOP_NAME,
+  accessToken: process.env.ACCESS_TOKEN,
+  autoLimit: true
 });
 
 const getProducts = async () => {
@@ -27,26 +34,13 @@ const getProducts = async () => {
       
   } while (params !== undefined);
   console.log(products.length);
-  fs.writeFileSync('records/products.json', JSON.stringify(products, null, '\t'));
+  fs.writeFileSync(path.join(__dirname, 'records/products.json'), JSON.stringify(products, null, '\t'));
 };
 
-// const colorsCounter = () => {
-//   const data = JSON.parse(fs.readFileSync('records/products.json'));
-//   const colors = data.reduce((acc, cur) => {
-//       cur.colors.map(color => {
-//           if (!acc[color]) {
-//               acc[color] = { qnt: 1};
-//           } else {
-//               acc[color].qnt += 1;
-//           }
-//       });
-//       return acc;
-//   }, {});
-//   console.log(colors);
-// }
+//getProducts();
 
 const colorsCounter = () => {
-  const data = JSON.parse(fs.readFileSync('records/products.json'));
+  const data = JSON.parse(fs.readFileSync(path.join(__dirname, 'records/products.json')));
   const colors = data.reduce((acc, cur) => {
     const option = cur.options.find(option => option.name === 'Color');
     const colorOption = `option${option.position}`;
@@ -65,7 +59,7 @@ const colorsCounter = () => {
 //colorsCounter();
 
 const updateProductColorsInStore = async () => {
-  const data = JSON.parse(fs.readFileSync('records/products.json'));
+  const data = JSON.parse(fs.readFileSync(path.join(__dirname, 'records/products.json')));
   const newData = data.map(product => {
       const option = product.options.find(option => option.name === 'Color');
       const colorOption = `option${option.position}`;
@@ -82,27 +76,24 @@ const updateProductColorsInStore = async () => {
 
       const existedVariants = Array.from(new Set(ok.map(v => v[colorOption])));
 
-      console.log(existedVariants);
-
       const res = edit.reduce((acc, variant) => {
           const variantColor = variant[colorOption];
           if(validColors.includes(colorMap[variantColor]) && !existedVariants.includes(colorMap[variantColor])) {
               const updateData = {};
               updateData[colorOption] = colorMap[variantColor];
               acc.update.push({
-                  id: variant.id,
-                  data: updateData
+                id: variant.id,
+                data: updateData
               });
           } else {
               acc.delete.push({
-                  id: variant.id,
-                  productId: product.id
+                id: variant.id,
+                productId: product.id
               });
           }
 
           return acc;
       }, { update: [] , delete: [] });
-
       res.update.map(({ id, data }) => {
           shopify.productVariant.update(id, data)
            .then(console.log)
@@ -116,3 +107,5 @@ const updateProductColorsInStore = async () => {
       })
   });
 }
+
+updateProductColorsInStore();

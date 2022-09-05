@@ -6,13 +6,14 @@
   "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node ./src/index.js"
+    "start": "node src/index.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
     "@shopify/shopify-api": "^5.0.1",
+    "dotenv": "^16.0.2",
     "shopify-api-node": "^3.11.0"
   }
 }

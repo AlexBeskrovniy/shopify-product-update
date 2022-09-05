@@ -2,3 +2,4 @@
 src/test.js
 src/config.js
 src/records
+.env
