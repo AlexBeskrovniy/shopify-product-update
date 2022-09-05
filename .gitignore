@@ -1,5 +1,5 @@
 /node_modules
 src/test.js
 src/config.js
-src/records
+src/products.json
 .env
